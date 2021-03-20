@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ルーレット</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link rel="stylesheet" href="roulette.css">
+    <script>
+        $(function() {
+            let idx = 0;
+            let timerId;
+            let pool = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+
+            // startボタン
+            $('#start').on('click', function() {
+                timerId = setInterval(roulette, 10);
+
+                $('#start').prop('disabled', true);
+                $('#stop,#reset').prop('disabled', false);
+            });
+
+            function roulette() {
+                if (pool.length === 0) {
+                    $('#start,#reset').prop('disabled', true);
+                }
+                idx = pool[Math.floor(Math.random() * pool.length)];
+                $('#t1 td').removeClass("selected").eq(idx).addClass("selected");
+            }
+
+            //stopボタン
+            $('#stop').prop('disabled', true);
+            $('#stop').on('click', function() {
+                clearInterval(timerId);
+                $('#t1 td').eq(idx).addClass("confirm");
+                pool.splice(pool.indexOf(idx), 1);
+
+                $('#start').prop('disabled', pool.length <= 0);
+                $('#stop').prop('disabled', true);
+                $('#reset').prop('disabled', false);
+            });
+
+            //resetボタン
+            $('#reset').on('click', function() {
+                clearInterval(timerId);
+                $('#t1 td').removeClass("confirm").removeClass("selected");
+                $('#start').prop('disabled', false);
+                $('#stop').prop('disabled', true);
+                pool = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+            });
+
+            for (var i = 0; i < 4; i++) {
+                var a = $('<tr>');
+                for (var j = 0; j < 4; j++) {
+                    var b = i * 4 + j + 1;
+                    a.append($('<td>').text(b));
+                }
+                $('#t1').append(a);
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <table id="t1">
+        <tbody>
+        </tbody>
+    </table>
+
+    <input type="button" value="start" id="start">
+    <input type="button" value="stop" id="stop">
+    <input type="button" value="reset" id="reset">
+
+
+</body>
+
+</html>
